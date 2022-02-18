@@ -1,0 +1,66 @@
+development:
+  env: development
+  debug: false
+
+  log:
+    version: 1
+    disable_existing_loggers: False
+    formatters:
+      simple:
+        format: "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
+      standard_format:
+        format: "[%(asctime)s][%(threadName)s:%(thread)d][task_id:%(name)s][%(filename)s:%(lineno)d]' '[%(levelname)s][%(message)s]"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+      info_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: simple
+        filename: ./var/log/flask/info.log
+        maxBytes: 10485760
+        backupCount: 20
+        encoding: utf8
+      error_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: standard_format
+        filename: ./var/log/flask/errors.log
+        maxBytes: 10485760
+        backupCount: 20
+        encoding: utf8
+      debug_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: DEBUG
+        formatter: standard_format
+        filename: ./var/log/flask/debug.log
+        maxBytes: 10485760
+        backupCount: 20
+        encoding: utf8
+    loggers:
+      debug:
+        level: DEBUG
+        handlers: [console, debug_file_handler]
+        propagate: no
+      warning:
+        level: WARNING
+        handlers: [error_file_handler]
+        propagate: no
+    root:
+        level: INFO
+        handlers: [console, info_file_handler]
+
+  SQLALCHEMY_DATABASE_URI: mysql://root:passwd@localhost/db_name?charset=utf8
+  SQLALCHEMY_TRACK_MODIFICATIONS: True
+  BABEL_DEFAULT_LOCALE: zh_CN
+  JWT_SECRET_KEY: yunysr
+  JWT_ALG: HS256
+  JWT_EXPIRE: 3600000
+  casbin_conf: ./src/conf/casbin.conf
+  white_list: ./src/conf/white_list.txt
+
+  default_page_size: 10
+  max_page_size: 50
